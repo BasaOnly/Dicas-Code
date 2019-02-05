@@ -1,0 +1,34 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class TrocaIMG : MonoBehaviour
+{
+    public Sprite[] imagens;
+    public SpriteRenderer sr;
+    public int x = 1;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        sr.sprite = imagens[1];
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (x == 1)
+            {
+                x = 0;
+            }
+            else
+            {
+                x = 1;
+            }
+
+            sr.sprite = imagens[x];
+        }
+    }
+}

@@ -1,0 +1,164 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Drag : MonoBehaviour
+{   //drag = arrasta
+    private Collider2D drag;
+    public LayerMask layer;
+    [SerializeField]
+    private bool clicked;
+    private Touch touch;
+
+    public LineRenderer lineFront;
+    public LineRenderer lineBack;
+
+    private Ray leftCatapultRay;
+    private CircleCollider2D patoCol;
+    private Vector2 catapultToPato;
+    private Vector3 pointL;
+
+    private SpringJoint2D spring;
+    private Vector2 prevVel;
+    private Rigidbody2D patoRB;
+
+    public GameObject fumacaMorte;
+
+    //Colider Dedo
+    public CircleCollider2D apertaDedo;
+    
+
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        drag = GetComponent<Collider2D>();
+        SetupLine();
+        leftCatapultRay = new Ray(lineFront.transform.position, Vector3.zero);
+        patoCol = GetComponent<CircleCollider2D>();
+        spring = GetComponent<SpringJoint2D>();
+        patoRB = GetComponent<Rigidbody2D>();
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        LineUpdate();
+        SpringEffect();
+        prevVel = patoRB.velocity;
+
+#if UNITY_ANDROID
+
+        if (Input.touchCount > 0)
+        {
+            touch = Input.GetTouch(0);
+            //passa para o wp a posição do toque de acordo com o espaço no ''world''
+            Vector2 wp = Camera.main.ScreenToWorldPoint(touch.position);
+            RaycastHit2D hit = Physics2D.Raycast(wp, Vector2.zero, Mathf.Infinity, layer.value);
+
+            if (hit.collider != null)
+            {
+                clicked = true;
+            }
+            if (clicked)
+            {   //se o dedo ta parado na tela ou movendo
+                if(touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
+                {
+                    Vector3 tPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10));
+                    transform.position = tPos;
+             
+                }
+            }
+
+            //se tirei o dedo ou cancelou ação girando celular
+            if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                patoRB.isKinematic = false;
+                clicked = false;
+                apertaDedo.enabled = false;
+                MataPato();
+            }
+        }       
+    }
+#endif
+
+#if UNITY_EDITOR
+        if (clicked)
+        {
+            Dragging();
+        }
+    }
+
+#endif
+
+        void SetupLine()
+    {
+        lineFront.SetPosition(0, lineFront.transform.position);
+        lineBack.SetPosition(0, lineBack.transform.position);
+    }
+
+    void LineUpdate()
+    {
+        //pega a distancia 
+        catapultToPato = transform.position - lineFront.transform.position;
+        //pega direcao da linha no pato
+        leftCatapultRay.direction = catapultToPato;
+        //muda a distancia para acabar a linha e adiciona o raio para complemento
+        pointL = leftCatapultRay.GetPoint(catapultToPato.magnitude + patoCol.radius);
+
+        lineFront.SetPosition(1, pointL);
+        lineBack.SetPosition(1, pointL);
+       
+    }
+
+    void SpringEffect()
+    {
+        //magnetude = comprimento vetor
+        if(spring != null && patoRB.isKinematic == false && prevVel.sqrMagnitude > patoRB.velocity.sqrMagnitude)
+        {
+            lineFront.enabled = false;
+            lineBack.enabled = false;
+            Destroy(spring);
+            patoRB.velocity = prevVel;
+        }
+    }
+
+    void MataPato()
+    {
+        if (patoRB.velocity.magnitude < 0.1f)
+        {
+            StartCoroutine(TempoMorte());
+            
+        }
+    }
+
+    IEnumerator TempoMorte()
+    {
+       
+       
+        yield return new WaitForSeconds(3);
+        Instantiate(fumacaMorte, new Vector2(transform.position.x, transform.position.y), Quaternion.identity);
+        Destroy(gameObject);
+    }
+
+
+    void Dragging()
+    {
+        Vector3 mouseWP = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWP.z = 0f;
+        transform.position = mouseWP;
+    }
+
+    void OnMouseDown()
+    {
+        clicked = true;
+    }
+    void OnMouseUp()
+    {
+        patoRB.isKinematic = false;
+        clicked = false;
+    }
+
+}

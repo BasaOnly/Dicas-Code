@@ -1,0 +1,9 @@
+  void OnBecameInvisible()
+    {
+        SegueBola.alvoInvisivel = true;
+    }
+
+    void OnBecameVisible()
+    {
+        SegueBola.alvoInvisivel = false;
+    }

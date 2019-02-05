@@ -1,0 +1,1 @@
+        Instantiate(bolaPrefab, new Vector2(Random.Range(posEsquerda.position.x, posDireta.position.x), Random.Range(posCima.position.y, posBaixo.position.y)), Quaternion.identity);

@@ -1,0 +1,42 @@
+public class SegueBola : MonoBehaviour
+{
+    public Image seta;
+    public Transform alvo;
+    public static bool alvoInvisivel = false;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Segue();   
+    }
+
+    void Segue()
+    {
+        if (!alvo)
+        {
+            return;
+        }
+
+        Vector2 aux;
+        //aux pega a pos da seta
+        aux = seta.rectTransform.position;
+        //aux = seta = posicao da bola
+        aux.x = alvo.position.x;
+        //posicao da seta original = posicao da aux q é = posicao da bola
+        seta.rectTransform.position = aux;
+        // Seria mais simples assim, mas a unity nao deixa. Por isso o codigo a cima.
+        // seta.rectTransform.position.x = alvo.position.x;
+
+    }
+
+    void VisualizaSeta()
+    {
+
+    }
+}

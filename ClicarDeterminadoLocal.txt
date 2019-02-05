@@ -1,0 +1,4 @@
+ Vector3 mouseWP = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWP.z = 0f;
+        RaycastHit2D hit = Physics2D.Raycast(mouseWP, Vector2.zero, Mathf.Infinity, layer.value);
+        if (hit.collider != null)

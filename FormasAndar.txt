@@ -1,0 +1,21 @@
+if(Input.GetKey(KeyCode.RightArrow)){
+transform.Translate(new Vector3(vel* Time.deltaTime, 0,0)
+}
+if(Input.GetKey(KeyCode.LeftArrow)){
+transform.Translate(new Vector3(-vel* Time.deltaTime, 0,0)
+}
+
+ou
+
+float h = Input.GetAxis("Horizontal");
+float v = Input.GetAxis("Vertical");
+transform.Translate(new Vector3 (h * time.deltaTime,v * time.deltaTime,0);
+
+acompanhar o mouse
+//aumentar sensitivy no Input para acomapanhar melhor
+float x = Input.GetAxis("Mouse X");
+float y = Input.GetAxis("Mouse Y");
+transform.Translate(new Vector3 (x * time.deltaTime,y * time.deltaTime,0);
+
+
+

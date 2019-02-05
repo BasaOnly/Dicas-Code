@@ -1,0 +1,38 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+public class LoadInfo : MonoBehaviour
+{
+    public GameObject carregandoTxt;
+    public GameObject carregando;
+
+   void Start()
+    {
+
+     
+    }
+    public void BtnClick(string s)
+    {
+        StartCoroutine(LoadGameProg(s));
+    }
+
+    IEnumerator LoadGameProg(string val)
+    {
+        carregando.SetActive(true);
+        carregandoTxt.SetActive(true);
+        
+        AsyncOperation async = SceneManager.LoadSceneAsync(val);
+        //se a operacao termino
+        while (!async.isDone)
+        {
+     
+            carregando.GetComponent<Image>().fillAmount += Time.time /50;
+            yield return null;
+        }
+    }
+
+    
+}

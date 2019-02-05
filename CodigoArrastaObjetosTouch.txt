@@ -1,0 +1,55 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Drag : MonoBehaviour
+{   //drag = arrasta
+    private Collider2D drag;
+    public LayerMask layer;
+    [SerializeField]
+    private bool clicked;
+    private Touch touch;
+
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        drag = GetComponent<Collider2D>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+        if(Input.touchCount > 0)
+        {
+            touch = Input.GetTouch(0);
+            //passa para o wp a posição do toque de acordo com o espaço no ''world''
+            Vector2 wp = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+            RaycastHit2D hit = Physics2D.Raycast(wp, Vector2.zero, Mathf.Infinity, layer.value);
+
+            if (hit.collider != null)
+            {
+                clicked = true;
+            }
+            if (clicked)
+            {   //se o dedo ta parado na tela ou movendo
+                if(touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
+                {
+                    Vector3 tPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10));
+                    transform.position = tPos;
+                }
+            }
+
+            //se tirei o dedo ou cancelou ação girando celular
+            if(touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                clicked = false;
+            }
+        }
+
+       
+
+    }
+}
